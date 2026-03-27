@@ -1,0 +1,26 @@
+{
+    "name": "@repo/worker",
+    "version": "0.1.0",
+    "main": "./src/index.ts",
+    "type": "module",
+    "scripts": {
+        "dev": "bun --env-file=../../.env --watch src/index.ts",
+        "build": "tsc",
+        "start": "bun src/index.ts"
+    },
+    "dependencies": {
+        "@langchain/langgraph": "^1.2.2",
+        "@repo/ai-service": "workspace:*",
+        "@repo/db": "workspace:*",
+        "@repo/env": "workspace:*",
+        "@repo/kafka": "workspace:*",
+        "dotenv": "^16.4.5",
+        "uuid": "^10.0.0"
+    },
+    "devDependencies": {
+        "@types/uuid": "^10.0.0",
+        "tsc-watch": "^6.2.0",
+        "typescript": "^5",
+        "@types/node": "^22.0.0"
+    }
+}
