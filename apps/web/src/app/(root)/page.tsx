@@ -1,245 +1,210 @@
-import { ArrowRight, Clock3, ShieldCheck, Sparkles } from "lucide-react";
-import Link from "next/link";
+import React from 'react';
+import { MessageCircle, Zap, Brain, Send, ArrowRight, Sparkles } from 'lucide-react';
 
-const metrics = [
-  { value: "48h", label: "Average match time" },
-  { value: "120+", label: "Vetted specialists" },
-  { value: "94%", label: "Repeat client rate" },
-];
-
-const featureCards = [
-  {
-    title: "Fast matching",
-    description:
-      "Share your scope once and get matched with the right product, design, or engineering support quickly.",
-    icon: Clock3,
-  },
-  {
-    title: "Vetted quality",
-    description:
-      "Every specialist is screened for execution quality, communication, and ability to ship in real teams.",
-    icon: ShieldCheck,
-  },
-  {
-    title: "Built for scale",
-    description:
-      "Start with a quick win, then expand into a longer engagement without changing the workflow.",
-    icon: Sparkles,
-  },
-];
-
-const faqs = [
-  {
-    question: "How does the matching process work?",
-    answer:
-      "You share your requirements, goals, and timeline. We review the scope, shortlist the best fit, and help you start with a clear plan.",
-  },
-  {
-    question: "What kind of projects is this best for?",
-    answer:
-      "It works well for landing pages, product design, frontend builds, rapid MVPs, redesigns, and ongoing growth work where quality matters.",
-  },
-  {
-    question: "Can I start with a smaller engagement first?",
-    answer:
-      "Yes. Many teams begin with a focused sprint or trial task before expanding into a longer project or retained collaboration.",
-  },
-  {
-    question: "How quickly can we get started?",
-    answer:
-      "Most projects can begin within a few days once the scope is confirmed and the best-fit specialist is selected.",
-  },
-];
-
-export default function Home() {
+const LandingPage: React.FC = () => {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#050816] font-sans text-white">
-      <div className="relative isolate">
-        <div className="absolute inset-x-0 top-0 -z-10 h-[38rem] bg-[radial-gradient(circle_at_top,_rgba(79,65,185,0.45),_transparent_55%)]" />
-        <div className="absolute left-1/2 top-24 -z-10 h-80 w-80 -translate-x-1/2 rounded-full bg-[#4F41B9]/30 blur-[120px]" />
+    <div className="relative min-h-screen overflow-hidden bg-black font-sans text-zinc-300 selection:bg-orange-500/30">
 
-        <section className="mx-auto max-w-7xl px-6 pb-16 pt-8 lg:px-8">
-          <div className="rounded-[2rem] border border-white/10 bg-[#060b1d]/90 shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_30px_120px_rgba(6,11,29,0.8)] backdrop-blur">
-            <header className="flex flex-col gap-6 px-6 py-6 lg:flex-row lg:items-center lg:justify-between lg:px-10">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#4F41B9] shadow-[0_8px_24px_rgba(79,65,185,0.35)]">
+      {/* Structural Background Texture (Grid) */}
+      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:24px_24px][mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
 
-                  <svg className="size-6" data-logo="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 58 41">
-                    <g id="logogram" transform="translate(0, 0) rotate(0) "><path fillRule="evenodd" clipRule="evenodd" d="M14.8333 6.49796L0.603516 20.6199C3.44972 23.4447 6.70108 25.8252 10.246 27.6877C11.2258 30.2671 12.7617 32.6861 14.8535 34.7621C22.7236 42.5725 35.4835 42.5725 43.3535 34.7621C45.4454 32.6861 46.9813 30.2671 47.9611 27.6875C51.5059 25.8252 54.7574 23.4447 57.6035 20.6199L43.3853 6.50945C43.3747 6.49889 43.3642 6.48834 43.3535 6.47779C35.4835 -1.33269 22.7236 -1.33269 14.8535 6.47779C14.8468 6.48452 14.84 6.49124 14.8333 6.49796ZM41.9919 30.2355C37.8452 31.6244 33.4921 32.3357 29.1035 32.3357C24.7149 32.3357 20.362 31.6244 16.2152 30.2355C16.6645 30.8271 17.1606 31.3948 17.7035 31.9337C23.9996 38.1821 34.2074 38.1821 40.5035 31.9337C41.0464 31.3948 41.5426 30.8271 41.9919 30.2355ZM17.9958 9.02337C19.065 9.72438 20.2018 10.3243 21.3914 10.8133C23.8364 11.8184 26.457 12.3357 29.1035 12.3357C31.75 12.3357 34.3706 11.8184 36.8156 10.8133C38.0052 10.3243 39.1421 9.72437 40.2114 9.02334C33.9938 3.15212 24.2132 3.15213 17.9958 9.02337Z" fill="#4F41B9" /></g>
-                    <g id="logotype" transform="translate(58, 20.5)"></g>
+      {/* Ambient Background Glows (Orange & Red) */}
+      <div className="absolute -left-40 top-0 h-[500px] w-[500px] rounded-full bg-orange-600 blur-[150px] opacity-20 pointer-events-none z-0"></div>
+      <div className="absolute -right-40 top-40 h-[500px] w-[500px] rounded-full bg-red-600 blur-[150px] opacity-20 pointer-events-none z-0"></div>
 
-                  </svg>
+      {/* Navigation */}
+      <nav className="relative z-10 flex items-center justify-between px-6 py-6 max-w-7xl mx-auto lg:px-8">
+        <div className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
+          <span className="text-2xl">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="none" viewBox="0 0 40 40"><path fill="#F06225" d="M20 0c11.046 0 20 8.954 20 20v14a6 6 0 0 1-6 6H21v-8.774c0-2.002.122-4.076 1.172-5.78a10 10 0 0 1 6.904-4.627l.383-.062a.8.8 0 0 0 0-1.514l-.383-.062a10 10 0 0 1-8.257-8.257l-.062-.383a.8.8 0 0 0-1.514 0l-.062.383a9.999 9.999 0 0 1-4.627 6.904C12.85 18.878 10.776 19 8.774 19H.024C.547 8.419 9.29 0 20 0Z"></path><path fill="#F06225" d="M0 21h8.774c2.002 0 4.076.122 5.78 1.172a10.02 10.02 0 0 1 3.274 3.274C18.878 27.15 19 29.224 19 31.226V40H6a6 6 0 0 1-6-6V21ZM40 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"></path></svg>
+          </span>
+          <span className="text-xl font-bold tracking-tight text-white">Elowen</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <a href="#features" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors hidden sm:block">Features</a>
+          <button className="rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:from-orange-400 hover:to-red-400 transition-all shadow-orange-500/20 hover:shadow-orange-500/40">
+            Add to Telegram
+          </button>
+        </div>
+      </nav>
 
+      {/* Hero Section */}
+      <main className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8 pt-16 pb-24 sm:pt-24 lg:pt-32 flex flex-col lg:flex-row items-center gap-16">
+
+        {/* Left Column: Copy */}
+        <div className="max-w-2xl lg:w-1/2">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 mb-8 backdrop-blur-sm">
+            <Sparkles size={14} className="text-orange-400" />
+            <span className="text-xs font-bold text-orange-400 uppercase tracking-wider">Meet your new assistant</span>
+          </div>
+
+          {/* Heading with White to Grey Shade Gradient */}
+          <h1 className="text-5xl font-extrabold tracking-tight sm:text-7xl mb-6 font-sans text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-500 leading-[1.1]">
+            AI that lives where <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">you already chat.</span>
+          </h1>
+
+          <p className="mt-6 text-lg leading-8 text-zinc-400 mb-8 max-w-lg">
+            Elowen is a chill AI assistant built right into Telegram. No switching tabs, no extra apps. Just message the bot and get smart, contextual replies instantly.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4">
+            <button className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all duration-300">
+              <Send size={18} />
+              Start Chatting Free
+            </button>
+            <button className="flex items-center justify-center gap-2 rounded-full bg-zinc-900/50 backdrop-blur-md px-8 py-4 text-base font-semibold text-white ring-1 ring-inset ring-white/10 hover:bg-white/10 transition-all duration-300">
+              See how it works <ArrowRight size={18} />
+            </button>
+          </div>
+          <p className="mt-6 text-sm text-zinc-600">Powered by a blazing fast Turborepo architecture.</p>
+        </div>
+
+        {/* Right Column: App Mockup (Dark Mode) */}
+        <div className="w-full lg:w-1/2 relative lg:translate-y-8">
+          {/* Mockup Container */}
+          <div className="relative mx-auto w-full max-w-[360px] bg-zinc-900 rounded-[2.5rem] p-2 shadow-2xl shadow-black ring-1 ring-white/10">
+            {/* Screen */}
+            <div className="relative bg-black rounded-[2rem] overflow-hidden h-[600px] flex flex-col border border-white/5">
+
+              {/* Telegram Header */}
+              <div className="flex items-center gap-3 px-4 py-3 bg-zinc-950/80 backdrop-blur-md border-b border-white/10 z-10">
+                <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-orange-500 to-red-500 flex items-center justify-center text-white text-lg shadow-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 40 40"><path fill="#fff" d="M20 0c11.046 0 20 8.954 20 20v14a6 6 0 0 1-6 6H21v-8.774c0-2.002.122-4.076 1.172-5.78a10 10 0 0 1 6.904-4.627l.383-.062a.8.8 0 0 0 0-1.514l-.383-.062a10 10 0 0 1-8.257-8.257l-.062-.383a.8.8 0 0 0-1.514 0l-.062.383a9.999 9.999 0 0 1-4.627 6.904C12.85 18.878 10.776 19 8.774 19H.024C.547 8.419 9.29 0 20 0Z"></path><path fill="#fff" d="M0 21h8.774c2.002 0 4.076.122 5.78 1.172a10.02 10.02 0 0 1 3.274 3.274C18.878 27.15 19 29.224 19 31.226V40H6a6 6 0 0 1-6-6V21ZM40 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"></path></svg>
                 </div>
                 <div>
-                  <p className="text-lg font-semibold tracking-[-0.03em]">RavenClaw</p>
-                  <p className="text-xs tracking-[0.16em] text-white/55 uppercase">Automate Your Shit</p>
-                </div>
-              </div>
-
-              <nav className="flex flex-wrap items-center gap-5 text-sm tracking-[-0.01em] text-white/70">
-                <a href="#services" className="transition hover:text-white">
-                  Services
-                </a>
-                <a href="#why-us" className="transition hover:text-white">
-                  Why us
-                </a>
-                <a href="#faq" className="transition hover:text-white">
-                  FAQ
-                </a>
-                <Link
-                  href="/dashboard/threads"
-                  className="rounded-full border border-white/10 bg-white/8 px-4 py-2 text-white transition hover:border-white/20 hover:bg-white/12"
-                >
-                  Get started
-                </Link>
-              </nav>
-            </header>
-
-            <div className="relative overflow-hidden rounded-[2rem] px-6 pb-10 pt-8 lg:px-10 lg:pb-14">
-              <div className="pointer-events-none absolute inset-x-6 bottom-0 top-1/3 rounded-[2rem] bg-[linear-gradient(180deg,rgba(79,65,185,0)_0%,rgba(79,65,185,0.2)_42%,rgba(122,109,255,0.68)_100%)] blur-3xl" />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 flex h-72 items-end justify-center gap-5 opacity-90">
-                {[220, 280, 170, 130, 240, 320, 260].map((height) => (
-                  <div
-                    key={height}
-                    className="w-14 rounded-t-[1.75rem] border border-white/6 bg-[linear-gradient(180deg,rgba(79,65,185,0.02)_0%,rgba(79,65,185,0.18)_35%,rgba(167,154,255,0.8)_100%)] shadow-[0_0_40px_rgba(122,109,255,0.18)]"
-                    style={{ height }}
-                  />
-                ))}
-              </div>
-
-              <div className="relative mx-auto flex max-w-4xl flex-col items-center text-center">
-                <span className="inline-flex items-center rounded-full border border-[#7a6dff]/30 bg-[#4F41B9]/15 px-4 py-1 text-xs font-medium tracking-[0.28em] text-[#c8c2ff] uppercase">
-                  Design-led delivery
-                </span>
-                <h1 className="mt-8 max-w-4xl text-5xl font-semibold tracking-[-0.05em] text-white sm:text-6xl lg:text-6xl">
-                  Get Latest Story Telling Posts Without Clicking Anything
-                </h1>
-                <p className="mt-6 max-w-2xl text-[16px] leading-8 tracking-[-0.01em] text-white/68 sm:text-lg">
-                  RavenClaw helps teams move from idea to polished execution with sharp design,
-                  fast delivery, and a workflow built for modern products.
-                </p>
-
-                <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
-                  <Link
-                    href="/dashboard/threads"
-                    className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#130f32] transition hover:scale-[1.02]"
-                  >
-                    Start To Automate
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                  <a
-                    href="#faq"
-                    className="inline-flex items-center rounded-full border border-white/14 bg-white/6 px-6 py-3 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white"
-                  >
-                    Explore FAQ
-                  </a>
-                </div>
-
-                <div className="mt-14 grid w-full gap-4 sm:grid-cols-3">
-                  {metrics.map((item) => (
-                    <div
-                      key={item.label}
-                      className="rounded-3xl border border-white/10 bg-white/5 px-5 py-5 backdrop-blur-sm"
-                    >
-                      <p className="text-3xl font-semibold tracking-[-0.04em] text-white">{item.value}</p>
-                      <p className="mt-2 text-sm tracking-[-0.01em] text-white/62">{item.label}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="services" className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
-          <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-            <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-8">
-              <p className="text-sm font-medium uppercase tracking-[0.3em] text-[#b0a7ff]">
-                Built for teams
-              </p>
-              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
-                A landing page that feels premium, focused, and conversion-ready
-              </h2>
-              <p className="mt-5 max-w-xl text-base leading-8 tracking-[-0.01em] text-white/68">
-                The structure follows the reference direction: a polished hero, clear value
-                proposition, supportive trust signals, helpful FAQs, and a clean footer for a
-                complete landing experience.
-              </p>
-            </div>
-
-            <div id="why-us" className="grid gap-4 sm:grid-cols-3">
-              {featureCards.map(({ title, description, icon: Icon }) => (
-                <article
-                  key={title}
-                  className="rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.07)_0%,rgba(79,65,185,0.08)_100%)] p-6"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#4F41B9]/18 text-[#d4ceff]">
-                    <Icon className="h-5 w-5" />
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-sm text-white">Elowen AI</h3>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400">BOT</span>
                   </div>
-                  <h3 className="mt-5 text-lg font-semibold tracking-[-0.03em] text-white">{title}</h3>
-                  <p className="mt-3 text-sm leading-7 tracking-[-0.01em] text-white/65">{description}</p>
-                </article>
-              ))}
+                  <p className="text-xs text-orange-400">online</p>
+                </div>
+              </div>
+
+              {/* Chat Area (with noise texture) */}
+              <div className="flex-1 p-4 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] bg-zinc-950/80 overflow-y-auto flex flex-col gap-4">
+                <div className="text-center text-xs text-zinc-500 my-2 font-medium">Today</div>
+
+                {/* User Message */}
+                <div className="self-end max-w-[80%]">
+                  <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm shadow-sm">
+                    Hey Elowen! Can you draft a quick polite email declining a meeting for tomorrow? I'm swamped.
+                  </div>
+                </div>
+
+                {/* Bot Message */}
+                <div className="self-start max-w-[85%] flex gap-2">
+                  <div className="h-6 w-6 rounded-full bg-gradient-to-tr from-orange-500 to-red-500 flex items-center justify-center text-white text-[10px] flex-shrink-0 mt-1">
+                    🌿
+                  </div>
+                  <div className="bg-zinc-900 text-zinc-300 rounded-2xl rounded-tl-sm px-4 py-3 text-sm shadow-sm border border-white/5 backdrop-blur-sm">
+                    <p className="mb-2">Of course! Here's a polite draft for you:</p>
+                    <p className="italic text-zinc-400 border-l-2 border-orange-500 pl-2 mb-2 bg-zinc-950/50 p-2 rounded-r-md">
+                      "Hi [Name], thanks for reaching out! I'm currently swamped with deadlines tomorrow and won't be able to meet. Could we reschedule for later this week?"
+                    </p>
+                    <p>Let me know if you want me to tweak the tone! ✨</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Input Area */}
+              <div className="px-4 py-3 bg-zinc-950 border-t border-white/10 flex items-center gap-2 z-10">
+                <div className="flex-1 bg-zinc-900 border border-white/5 rounded-full px-4 py-2.5 text-sm text-zinc-500">
+                  Message...
+                </div>
+                <div className="h-10 w-10 rounded-full bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center text-white shadow-sm hover:opacity-90 transition-opacity cursor-pointer">
+                  <Send size={16} className="ml-0.5" />
+                </div>
+              </div>
+
             </div>
           </div>
-        </section>
 
-        <section id="faq" className="mx-auto max-w-5xl px-6 py-14 lg:px-8">
-          <div className="text-center">
-            <p className="text-sm font-medium uppercase tracking-[0.3em] text-[#b0a7ff]">
-              FAQ
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
-              Everything you need to know before starting
+          {/* Decorative Elements around mockup */}
+          <div className="absolute top-20 -left-12 bg-zinc-900/90 backdrop-blur-sm p-3 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-3 animate-[float_4s_ease-in-out_infinite]">
+            <div className="bg-red-500/20 p-2 rounded-xl text-red-400"><Brain size={20} /></div>
+            <div className="text-sm font-semibold text-zinc-200">Context Aware</div>
+          </div>
+          <div className="absolute bottom-32 -right-8 bg-zinc-900/90 backdrop-blur-sm p-3 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-3 animate-[float_5s_ease-in-out_infinite_reverse]">
+            <div className="bg-orange-500/20 p-2 rounded-xl text-orange-400"><Zap size={20} /></div>
+            <div className="text-sm font-semibold text-zinc-200">Zero Latency</div>
+          </div>
+        </div>
+      </main>
+
+      {/* Features Section */}
+      <section id="features" className="relative z-10 py-24 border-t border-white/5 bg-gradient-to-b from-transparent to-zinc-950/80 backdrop-blur-sm">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-3xl font-bold tracking-tight font-sans text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-500 sm:text-4xl">
+              Everything you need, nothing you don't.
             </h2>
+            <p className="mt-4 text-lg text-zinc-400">
+              Built to feel more like chatting with a real assistant than navigating a clunky interface.
+            </p>
           </div>
 
-          <div className="mt-10 space-y-4">
-            {faqs.map((item) => (
-              <details
-                key={item.question}
-                className="group rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-6 py-5 open:bg-white/[0.05]"
-              >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left text-base font-medium tracking-[-0.02em] text-white">
-                  <span>{item.question}</span>
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xl text-[#c8c2ff] transition group-open:rotate-45">
-                    +
-                  </span>
-                </summary>
-                <p className="pt-4 pr-12 text-sm leading-7 tracking-[-0.01em] text-white/68">{item.answer}</p>
-              </details>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <FeatureCard
+              icon={<MessageCircle className="text-orange-400" size={24} />}
+              title="Native to Telegram"
+              description="No extra apps to download, no new accounts to create. Just search for Elowen and start talking right where you chat with friends."
+            />
+            <FeatureCard
+              icon={<Zap className="text-red-400" size={24} />}
+              title="Lightning Fast"
+              description="Powered by a highly optimized Turborepo backend, Elowen streams responses in real-time so you're never left waiting."
+            />
+            <FeatureCard
+              icon={<Brain className="text-orange-500" size={24} />}
+              title="Remembers Context"
+              description="Elowen actually remembers what you were talking about 5 minutes ago (or 5 days ago), making conversations flow naturally."
+            />
           </div>
-        </section>
+        </div>
+      </section>
 
-        <footer id="contact" className="mx-auto max-w-7xl px-6 pb-10 pt-6 lg:px-8">
-          <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(79,65,185,0.18)_0%,rgba(255,255,255,0.03)_100%)] px-8 py-8">
-            <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-              <div className="max-w-2xl">
-                <p className="text-sm font-medium uppercase tracking-[0.3em] text-[#b0a7ff]">
-                  Ready to build
-                </p>
-                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
-                  Bring your next launch to life with a sharper visual presence
-                </h2>
-                <p className="mt-4 text-base leading-8 tracking-[-0.01em] text-white/68">
-                  Use this landing page as the front door for your product, agency, or service and
-                  expand the sections later as your content grows.
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-3 text-sm tracking-[-0.01em] text-white/62 sm:text-right">
-                <a href="mailto:hello@ravenclaw.dev" className="text-white transition hover:text-[#d4ceff]">
-                  hello@ravenclaw.dev
-                </a>
-                <p>RavenClaw Studio</p>
-                <p>Crafted with a focused `#4F41B9` visual system.</p>
-              </div>
-            </div>
+      {/* Footer CTA */}
+      <footer className="relative z-10 border-t border-white/5 py-16 bg-black/50 backdrop-blur-xl">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8 flex flex-col items-center text-center">
+          <h2 className="text-2xl font-bold font-sans text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-400 mb-6">
+            Ready to upgrade your workflow?
+          </h2>
+          <button className="rounded-full bg-white px-8 py-3.5 text-sm font-bold text-black shadow-[0_0_30px_rgba(249,115,22,0.2)] hover:shadow-[0_0_30px_rgba(249,115,22,0.4)] hover:bg-zinc-200 hover:scale-105 transition-all duration-300 mb-12">
+            Start chatting with Elowen
+          </button>
+          <div className="flex items-center gap-2 text-zinc-600 text-sm font-medium">
+            <span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 40 40"><path fill="#F06225" d="M20 0c11.046 0 20 8.954 20 20v14a6 6 0 0 1-6 6H21v-8.774c0-2.002.122-4.076 1.172-5.78a10 10 0 0 1 6.904-4.627l.383-.062a.8.8 0 0 0 0-1.514l-.383-.062a10 10 0 0 1-8.257-8.257l-.062-.383a.8.8 0 0 0-1.514 0l-.062.383a9.999 9.999 0 0 1-4.627 6.904C12.85 18.878 10.776 19 8.774 19H.024C.547 8.419 9.29 0 20 0Z"></path><path fill="#F06225" d="M0 21h8.774c2.002 0 4.076.122 5.78 1.172a10.02 10.02 0 0 1 3.274 3.274C18.878 27.15 19 29.224 19 31.226V40H6a6 6 0 0 1-6-6V21ZM40 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"></path></svg>
+            </span>
+            <span>© {new Date().getFullYear()} Elowen AI. All rights reserved.</span>
           </div>
-        </footer>
-      </div>
-    </main>
+        </div>
+      </footer>
+    </div>
   );
+};
+
+// Feature Card Sub-component
+interface FeatureCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
 }
+
+const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description }) => {
+  return (
+    <div className="group bg-zinc-900/40 backdrop-blur-sm rounded-3xl p-8 border border-white/5 hover:bg-zinc-900/80 hover:border-orange-500/30 transition-all duration-300">
+      <div className="h-12 w-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 group-hover:bg-orange-500/10 transition-all duration-300">
+        {icon}
+      </div>
+      <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-orange-400 group-hover:to-red-400 transition-all duration-300">
+        {title}
+      </h3>
+      <p className="text-zinc-400 leading-relaxed text-sm">
+        {description}
+      </p>
+    </div>
+  );
+};
+
+export default LandingPage;
