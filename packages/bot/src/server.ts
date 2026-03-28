@@ -20,3 +20,8 @@ export function startBot() {
     process.on("SIGINT", () => bot.stopPolling());
     process.on("SIGTERM", () => bot.stopPolling());
 }
+
+export async function setupWebhook(webhookUrl: string) {
+    await bot.setWebHook(webhookUrl);
+    console.log(`[bot] Webhook set to: ${webhookUrl}`);
+}

@@ -5,3 +5,71 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id         String     @id @default(cuid())
+  telegramId BigInt     @unique
+  firstName  String
+  lastName   String?
+  username   String?
+  photoUrl   String?
+  modelId    String?
+  modelName  String?
+  sessions   Session[]
+  messages   Message[]
+  userUsage  UserUsage?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+enum MessageType {
+  NORMAL
+  ERROR
+  TOOL_CALL
+}
+
+model UserUsage {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tokenConsumed Decimal? @db.Decimal(12, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("user_usage")
+}
+
+model Message {
+  id          String      @id @default(uuid())
+  messageRole MessageRole @default(USER)
+  messageType MessageType @default(NORMAL)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  content String @db.Text
+  model   String
+  chatId  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([chatId, createdAt])
+  @@map("message")
+}

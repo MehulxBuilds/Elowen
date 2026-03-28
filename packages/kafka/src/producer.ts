@@ -1,14 +1,27 @@
 import { kafka, TOPICS } from "./client";
 import type { Producer } from "kafkajs";
-import { Prisma } from "@repo/db";
+import { MessageRole, MessageType, Prisma } from "@repo/db";
 
-interface UserQueryMessage {
-    id: string
-}
+export interface UserQueryMessage {
+    id: string,
+    query: string,
+    chatId: string, // this is nothing but the telegramId.
+    userId: string, // userId -> user db Id.
+    createdAt: Date,
+    role: MessageRole,
+    type: MessageType
+};
 
 export interface ResponseProcessorMessage {
     id: string,
-}
+    userId: string,
+    chatId: string,
+    content: string,
+    createdAt: Date,
+    role: MessageRole,
+    type: MessageType,
+    tokens?: number,
+};
 
 export class ResponseProcessorProducer {
     private producer: Producer;
@@ -32,7 +45,7 @@ export class ResponseProcessorProducer {
         }
     }
 
-    async publishPost(message: ResponseProcessorMessage): Promise<string> {
+    async publishMessage(message: ResponseProcessorMessage): Promise<string> {
         await this.connect();
 
         const topic = TOPICS.RESPONSE_PROCESSOR;
@@ -79,7 +92,7 @@ export class UserQueryProducer {
         }
     }
 
-    async publishPost(message: UserQueryMessage): Promise<string> {
+    async publishMessage(message: UserQueryMessage): Promise<string> {
         await this.connect();
 
         const topic = TOPICS.USER_QUERY;
@@ -102,7 +115,7 @@ export class UserQueryProducer {
             throw error;
         }
     }
-}
+};
 
 // Singleton instance
 type ProducerMap = {

@@ -18,7 +18,7 @@ export class UserMessageCache {
         });
     }
 
-    async addPost(key: string, messages: any[]): Promise<void> {
+    async addMessage(key: string, messages: any[]): Promise<void> {
         if (!messages.length) return;
 
         try {
@@ -48,7 +48,7 @@ export class UserMessageCache {
         }
     }
 
-    async getPost(key: string): Promise<any[] | null> {
+    async getMessage(key: string): Promise<any[] | null> {
         try {
             const data = await this.redis.get(key);
             return data ? JSON.parse(data) : null;

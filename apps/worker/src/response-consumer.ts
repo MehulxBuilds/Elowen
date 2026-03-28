@@ -1,14 +1,17 @@
 import { kafka, TOPICS, getProducer } from "@repo/kafka";
+import type { Consumer, EachBatchPayload, ResponseProcessorMessage, UserQueryMessage } from "@repo/kafka";
+import { getUserMessageCache } from "@repo/cache";
 import { client } from "@repo/db";
-import type { Consumer, EachBatchPayload, PostCleanUpMessage } from "@repo/kafka";
+import { generateOpenRouterText } from "@repo/ai-service";
+import { v4 as uuidv4 } from "uuid";
 
-export class PostCleanupConsumer {
+export class ResponseConsumer {
     private consumer: Consumer;
     private isRunning = false;
 
     constructor() {
         this.consumer = kafka.consumer({
-            groupId: "post-cleanup-group", // cleanup consumer group
+            groupId: "query-group",
         });
     }
 
@@ -17,10 +20,10 @@ export class PostCleanupConsumer {
 
         try {
             await this.consumer.connect();
-            console.log("Kafka PostCleanupConsumer: Connected and listening...");
+            console.log("Kafka ResponseConsumer: Connected and listening...");
 
             await this.consumer.subscribe({
-                topics: [TOPICS.POST_CLEANUP],
+                topics: [TOPICS.USER_QUERY],
                 fromBeginning: false,
             });
 
@@ -33,14 +36,14 @@ export class PostCleanupConsumer {
                     isRunning,
                 }: EachBatchPayload) => {
                     const messages = batch.messages;
-                    const batchSize = 500;
-                    const flushInterval = 3000;
+                    const batchSize = 10; // Lower batch size for automate due to API calls
+                    const flushInterval = 5000;
 
                     console.log(
-                        `PostCleanupConsumer received ${messages.length} messages from Kafka`,
+                        `ResponseConsumer received ${messages.length} messages from Kafka`,
                     );
 
-                    let currentBatch: (PostCleanUpMessage & { offset: string })[] = [];
+                    let currentBatch: (UserQueryMessage & { offset: string })[] = [];
                     let lastFlush = Date.now();
 
                     for (const message of messages) {
@@ -50,7 +53,7 @@ export class PostCleanupConsumer {
                             const rawValue = message.value?.toString();
                             if (!rawValue) continue;
 
-                            const content = JSON.parse(rawValue) as PostCleanUpMessage;
+                            const content = JSON.parse(rawValue) as UserQueryMessage;
                             currentBatch.push({
                                 ...content,
                                 offset: message.offset,
@@ -101,52 +104,90 @@ export class PostCleanupConsumer {
         if (this.isRunning) {
             await this.consumer.disconnect();
             this.isRunning = false;
-            console.log("Kafka PostCleanupConsumer: Stopped successfully");
+            console.log("Kafka ResponseConsumer: Stopped successfully");
         }
     }
 
     private async processBatchItems(
-        messages: (PostCleanUpMessage & { offset: string })[],
+        messages: (UserQueryMessage & { offset: string })[],
     ) {
         if (messages.length === 0) return;
 
-        console.log(`⚡ PostCleanupConsumer processing batch of ${messages.length} items...`);
+        console.log(`⚡ ResponseConsumer processing batch of ${messages.length} items...`);
+        const startTime = Date.now();
 
-        try {
+        const responseProducer = getProducer("response");
 
-            // Then push to db
-            await client.aIPosts.deleteMany({
-                where: {
-                    id: {
-                        in: messages.map(m => m.id)
-                    }
-                }
-            });
-
-        } catch (e) {
-            console.error(
-                "❌ Post database batch write failed. Initiating recovery...",
-                e,
-            );
-
-            const producer = getProducer("cleanup");
+        for (const msg of messages) {
             try {
-                for (const msg of messages) {
-                    const originalMessage = { ...msg };
-                    // @ts-expect-error - remove offset before re-publishing
-                    delete originalMessage.offset;
-                    await producer.publishPost(originalMessage);
+                const cacheKey = `user:${msg.userId}:msg`;
+
+                // 1. Grab last 10 messages from cache, fallback to DB
+                let history = await getUserMessageCache().getMessage(cacheKey);
+                if (!history) {
+                    const dbMessages = await client.message.findMany({
+                        where: { userId: msg.userId, chatId: msg.chatId },
+                        orderBy: { createdAt: "desc" },
+                        take: 10,
+                        select: { messageRole: true, content: true },
+                    });
+                    history = dbMessages.reverse();
                 }
-                console.log(
-                    `🔄 Post recovery: Re-queued ${messages.length} messages to Kafka topic.`,
-                );
-            } catch (produceError) {
-                console.error(
-                    "🔥 CRITICAL: Failed to re-queue post messages! Data loss possible.",
-                    produceError,
-                );
+
+                // 2. Format as AI context
+                const context = history.slice(-10).map((m: any) => ({
+                    role: m.messageRole === "ASSISTANT" ? "assistant" as const : "user" as const,
+                    content: m.content,
+                }));
+
+                // 3. Get user's selected model
+                const user = await client.user.findUnique({
+                    where: { id: msg.userId },
+                    select: { modelId: true },
+                });
+
+                // 4. Generate AI reply
+                const content = await generateOpenRouterText({
+                    modelId: user?.modelId ?? "arcee-ai/trinity-mini:free",
+                    context,
+                    prompt: msg.query,
+                });
+
+                // Create raw processor message with gathered data
+                const responseMessage: ResponseProcessorMessage = {
+                    id: uuidv4(),
+                    userId: msg.userId,
+                    chatId: msg.chatId,
+                    content: content.text,
+                    createdAt: msg.createdAt,
+                    role: "ASSISTANT",
+                    type: "NORMAL",
+                    tokens: content.token,
+                };
+
+                const userMessage: ResponseProcessorMessage = {
+                    id: msg.id,
+                    userId: msg.userId,
+                    chatId: msg.chatId,
+                    content: msg.query,
+                    createdAt: msg.createdAt,
+                    role: "USER",
+                    type: "NORMAL",
+                };
+
+                // Push agent message to processor queue
+                await responseProducer.publishMessage(responseMessage);
+
+                // Push user message to processor queue
+                await responseProducer.publishMessage(userMessage);
+                console.log(`✅ Produced Response Successfully`);
+            } catch (error) {
+                console.error(`❌ Failed to process automate message ${msg.id}:`, error);
             }
         }
+
+        const duration = Date.now() - startTime;
+        console.log(`✅ ResponseConsumer batch processed in ${duration} ms`);
     }
 
     async getLag(): Promise<number> {
@@ -155,8 +196,8 @@ export class PostCleanupConsumer {
             await admin.connect();
             let totalLag = 0;
             const groupOffsets = await admin.fetchOffsets({
-                groupId: "post-automate-group",
-                topics: [TOPICS.POST_CLEANUP],
+                groupId: "query-group",
+                topics: [TOPICS.USER_QUERY],
             });
 
             for (const topicOffset of groupOffsets) {
@@ -188,11 +229,11 @@ export class PostCleanupConsumer {
     }
 }
 
-let PostCleanupConsumerInstance: PostCleanupConsumer | null = null;
-export function getPostCleanupConsumer(): PostCleanupConsumer {
-    if (!PostCleanupConsumerInstance) {
-        PostCleanupConsumerInstance = new PostCleanupConsumer();
+let ResponseConsumerInstance: ResponseConsumer | null = null;
+export function getResponseConsumer(): ResponseConsumer {
+    if (!ResponseConsumerInstance) {
+        ResponseConsumerInstance = new ResponseConsumer();
     }
-    return PostCleanupConsumerInstance;
+    return ResponseConsumerInstance;
 }
 

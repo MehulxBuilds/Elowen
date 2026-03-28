@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@repo/env": "workspace:*",
+    "@repo/db": "workspace:*",
     "@google/genai": "^1.42.0",
     "@openrouter/sdk": "^0.9.11"
   }

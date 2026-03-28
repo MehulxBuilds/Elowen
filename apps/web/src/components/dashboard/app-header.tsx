@@ -50,9 +50,7 @@ const AppHeader = () => {
 
             <div className="px-10 flex justify-center items-center">
                 <div className="flex justify-center items-center gap-2 p-1 rounded-[30px] px-1.2">
-                    <div className="flex justify-center items-center object-fill border-2 border-white rounded-full">
-                        
-                    </div>
+                    <UserButton size="md" />
                     <ModeToggle />
                 </div>
             </div>

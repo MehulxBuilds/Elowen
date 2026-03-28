@@ -1,38 +1,26 @@
-// import { API_BASE } from "@/utils/constants";
-// import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
-// export type MeResponse = {
-//   user: {
-//     id: string;
-//     name: string;
-//     email: string;
-//     image?: string | null;
-//     role?: string;
-//     createdAt?: string;
-//   };
-//   session: {
-//     id: string;
-//     expiresAt: string;
-//   };
-// } | null;
+export type MeUser = {
+    id: string;
+    firstName: string;
+    lastName: string | null;
+    username: string | null;
+    photoUrl: string | null;
+    modelId: string | null;
+    modelName: string | null;
+};
 
-// const fetchMe = async (): Promise<MeResponse> => {
-//   const response = await fetch(`${API_BASE}/api/me`, {
-//     method: "GET",
-//     credentials: "include",
-//   });
+const fetchMe = async (): Promise<MeUser | null> => {
+    const res = await fetch(`/api/auth/me`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.user ?? null;
+};
 
-//   if (!response.ok) {
-//     throw new Error("Failed to load profile");
-//   }
-
-//   return response.json();
-// };
-
-// export const useMeQuery = (enabled: boolean) =>
-//   useQuery({
-//     queryKey: ["me"],
-//     queryFn: fetchMe,
-//     enabled,
-//     staleTime: 60_000,
-//   });
+export const useMeQuery = () =>
+    useQuery({
+        queryKey: ["me"],
+        queryFn: fetchMe,
+        staleTime: 60_000,
+        retry: false,
+    });
