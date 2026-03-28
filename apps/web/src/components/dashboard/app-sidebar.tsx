@@ -26,11 +26,6 @@ const data = {
             url: "#",
             items: [
                 {
-                    icon: IconCategory,
-                    title: "Threads",
-                    url: "/dashboard",
-                },
-                {
                     icon: IconTemplate,
                     title: "Features",
                     url: "/dashboard/features",

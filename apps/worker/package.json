@@ -3,11 +3,17 @@
     "version": "0.1.0",
     "main": "./src/index.ts",
     "type": "module",
-    
+    "scripts": {
+        "dev": "bun --env-file=../../.env --watch src/index.ts",
+        "build": "tsc",
+        "start": "bun src/index.ts"
+    },
     "dependencies": {
         "@repo/ai-service": "workspace:*",
         "@repo/db": "workspace:*",
+        "@repo/bot": "workspace:*",
         "@repo/env": "workspace:*",
+        "@repo/cache": "workspace:*",
         "@repo/kafka": "workspace:*",
         "dotenv": "^16.4.5",
         "uuid": "^10.0.0"

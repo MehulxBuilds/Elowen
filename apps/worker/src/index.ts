@@ -1,7 +1,6 @@
-import { getPostAutomateConsumer } from "./post-automate-consumer";
-import { getPostRawConsumer } from "./post-raw-consumer";
-import { getPostDumpConsumer } from "./post-dump-consumer";
-import { getPostCleanupConsumer } from "./post-cleanup-consumer";
+import { getDumpConsumer } from "./dump-consumer";
+import { getResponseConsumer } from "./response-consumer";
+import { getTelegramPushConsumer } from "./telegram-push-consumer";
 
 const LAG_CHECK_INTERVAL = 30000; // 30 seconds
 const HIGH_LAG_THRESHOLD = 1000;
@@ -13,10 +12,9 @@ interface BaseConsumer {
 }
 
 const consumerGetters: (() => BaseConsumer)[] = [
-    getPostAutomateConsumer,
-    getPostRawConsumer,
-    getPostDumpConsumer,
-    getPostCleanupConsumer
+    getDumpConsumer,
+    getResponseConsumer,
+    getTelegramPushConsumer
 ];
 
 let consumers: BaseConsumer[] = [];
@@ -36,7 +34,7 @@ async function initConsumers() {
     }
 
     return startedConsumers;
-}
+};
 
 function startLagMonitoring(consumers: BaseConsumer[]) {
     setInterval(async () => {
@@ -57,7 +55,7 @@ function startLagMonitoring(consumers: BaseConsumer[]) {
             }
         }
     }, LAG_CHECK_INTERVAL);
-}
+};
 
 async function runConsumer() {
     console.log("Initializing Kafka Consumer Service...");

@@ -1,7 +1,11 @@
 import React from 'react';
 import { MessageCircle, Zap, Brain, Send, ArrowRight, Sparkles } from 'lucide-react';
+import { bot } from "@repo/bot";
 
 const LandingPage: React.FC = () => {
+  bot.on("message", (msg) => {
+    console.log(msg)
+  })
   return (
     <div className="relative min-h-screen overflow-hidden bg-black font-sans text-zinc-300 selection:bg-orange-500/30">
 

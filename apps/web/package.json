@@ -12,6 +12,8 @@
     "@base-ui/react": "^1.2.0",
     "@hookform/resolvers": "^5.2.2",
     "@repo/db": "workspace:*",
+    "@repo/bot": "workspace:*",
+    "@repo/kafka": "workspace:*",
     "@repo/ui": "workspace:*",
     "@repo/env": "workspace:*",
     "@tabler/icons-react": "^3.40.0",
