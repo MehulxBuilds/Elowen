@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { server_env } from "@repo/env";
 import { getSessionUser } from "@/lib/session";
+import aj from "@/lib/arcjet";
 
 export async function GET(req: NextRequest) {
+    const decision = await aj.protect(req);
+    if (decision.isDenied()) {
+        return NextResponse.json({ error: "Too Many Requests" }, { status: 429 });
+    }
+    
     const user = await getSessionUser(req);
     if (!user) {
         return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
@@ -25,7 +31,11 @@ export async function GET(req: NextRequest) {
         .filter((model) => {
             const promptPrice = parseFloat(model.pricing?.prompt || "0");
             const completionPrice = parseFloat(model.pricing?.completion || "0");
-            return promptPrice === 0 && completionPrice === 0;
+            if (promptPrice !== 0 || completionPrice !== 0) return false;
+
+            // Only keep text-to-text models (exclude embedding, audio, image, video)
+            const modality = model.architecture?.modality || "";
+            return modality.endsWith("->text");
         })
         .map((model) => ({
             id: model.id,

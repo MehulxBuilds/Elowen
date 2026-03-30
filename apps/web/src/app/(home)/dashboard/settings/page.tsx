@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMeQuery } from "@/hooks/use-me-query";
-import { toast } from "sonner";
+import { useModelsQuery, useUpdateModel } from "@/hooks/use-models";
+import type { Model } from "@/hooks/use-models";
 import {
     Command,
     CommandEmpty,
@@ -22,51 +22,16 @@ import {
 } from "@repo/ui";
 import { CheckIcon, BotIcon, Settings2Icon } from "lucide-react";
 
-type Model = {
-    id: string;
-    name: string;
-    description: string;
-    context_length: number;
-};
-
-async function fetchModels(): Promise<Model[]> {
-    const res = await fetch("/api/ai/get-models");
-    if (!res.ok) throw new Error("Failed to fetch models");
-    const data = await res.json();
-    return data.models;
-}
-
-async function saveModel(payload: { modelId: string; modelName: string }) {
-    const res = await fetch("/api/ai/update-model", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error("Failed to update model");
-    return res.json();
-}
-
 export default function SettingsPage() {
-    const queryClient = useQueryClient();
     const { data: me } = useMeQuery();
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState<Model | null>(null);
 
-    const { data: models = [], isLoading } = useQuery({
-        queryKey: ["models"],
-        queryFn: fetchModels,
-        enabled: open,
-        staleTime: 5 * 60 * 1000,
-    });
+    const { data: models = [], isLoading } = useModelsQuery(open);
 
-    const { mutate: updateModel, isPending } = useMutation({
-        mutationFn: saveModel,
-        onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ["me"] });
-            toast.success(data?.message || "Model saved successfully");
-            setOpen(false);
-            setSelected(null);
-        },
+    const { mutate: updateModel, isPending } = useUpdateModel(() => {
+        setOpen(false);
+        setSelected(null);
     });
 
     const handleSave = () => {

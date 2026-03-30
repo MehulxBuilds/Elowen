@@ -2,7 +2,8 @@ import { kafka, TOPICS, getProducer } from "@repo/kafka";
 import type { Consumer, EachBatchPayload, ResponseProcessorMessage, UserQueryMessage } from "@repo/kafka";
 import { getUserMessageCache } from "@repo/cache";
 import { client } from "@repo/db";
-import { generateOpenRouterText } from "@repo/ai-service";
+import { generateOpenRouterText, RateLimitError } from "@repo/ai-service";
+import { bot } from "@repo/bot";
 import { v4 as uuidv4 } from "uuid";
 
 export class ResponseConsumer {
@@ -183,6 +184,18 @@ export class ResponseConsumer {
                 console.log(`✅ Produced Response Successfully`);
             } catch (error) {
                 console.error(`❌ Failed to process automate message ${msg.id}:`, error);
+
+                if (error instanceof RateLimitError) {
+                    try {
+                        await bot.sendMessage(
+                            parseInt(msg.chatId),
+                            `⚠️ *Rate Limit Alert*\n\nThe model *${error.modelId}* is currently rate-limited and not responding.\n\nPlease switch to a different model from the web app to continue chatting.`,
+                            { parse_mode: "Markdown" }
+                        );
+                    } catch (sendError) {
+                        console.error(`❌ Failed to send rate-limit alert to chatId ${msg.chatId}:`, sendError);
+                    }
+                }
             }
         }
 

@@ -2,12 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { getProducer } from "@repo/kafka";
 import { bot } from "@repo/bot";
 import { client } from "@repo/db";
+import aj from "@/lib/arcjet";
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
     const msg = body.message;
 
-    console.log(msg);
+    const decision = await aj.protect(req);
+    if (decision.isDenied()) {
+        bot.sendMessage(msg.chat.id, "⚠️ Too Many Requests\n\nPlease try again later.");
+        return NextResponse.json({ error: "Too Many Requests" }, { status: 429 });
+    }
+
 
     if (!msg?.text) {
         return NextResponse.json({ ok: true });
@@ -23,8 +29,23 @@ export async function POST(req: NextRequest) {
     };
 
     const chatId = msg.chat.id;
-    console.log("[bot] message:", msg.text, "userId:", user.id);
-    // await bot.sendMessage(chatId, "pong");
+
+    // Check token usage limit before producing to Kafka
+    const usage = await client.userUsage.findUnique({
+        where: { userId: user.id },
+        select: { tokenConsumed: true },
+    });
+    const tokensUsed = Number(usage?.tokenConsumed ?? 0);
+    if (tokensUsed >= 2000) {
+        await bot.sendMessage(
+            chatId,
+            `⚠️ *Usage Limit Reached*\n\nYou've used all your free credits (${tokensUsed}/2000).\n\nPlease upgrade your plan to continue chatting.`,
+            { parse_mode: "Markdown" }
+        );
+        return NextResponse.json({ ok: true });
+    }
+
+    // console.log("[bot] message:", msg.text, "userId:", user.id);
 
     const id = crypto.randomUUID();
 

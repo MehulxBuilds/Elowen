@@ -18,6 +18,7 @@ export const ServerEnvSchema = z.object({
     OPENROUTER_API_KEY: z.string().optional(),
     NEWS_API_KEY: z.string().optional().default("pub_d20c3202e78b42c7bba700a3d506c571"),
     TELEGRAM_WEBHOOK_URL: z.string().url().optional(),
+    ARCJET_API: z.string().optional(),
 });
 
 export type ServerEnv = z.infer<typeof ServerEnvSchema>;

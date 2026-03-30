@@ -10,6 +10,15 @@ type AIMessage = {
     content: string;
 };
 
+export class RateLimitError extends Error {
+    modelId: string;
+    constructor(modelId: string) {
+        super(`Rate limited by model: ${modelId}`);
+        this.name = "RateLimitError";
+        this.modelId = modelId;
+    }
+}
+
 const DEFAULT_SYSTEM_INSTRUCTION = `
 You are Elowen, a smart, sweet, and friendly female AI assistant who lives inside Telegram.
 
@@ -53,6 +62,9 @@ Tone:
 - Use emojis occasionally, but keep them minimal and natural
 `;
 
+// Rough estimate: ~1 token per 4 characters for English text
+const SYSTEM_INSTRUCTION_TOKEN_ESTIMATE = Math.ceil(DEFAULT_SYSTEM_INSTRUCTION.length / 4);
+
 export const generateOpenRouterText = async ({
     modelId = "arcee-ai/trinity-mini:free",
     context = [],
@@ -70,15 +82,23 @@ export const generateOpenRouterText = async ({
         { role: "user", content: prompt },
     ];
 
-    const result = await openrouter.chat.send({
-        chatGenerationParams: {
-            model: modelId,
-            messages,
-        },
-    });
+    try {
+        const result = await openrouter.chat.send({
+            chatGenerationParams: {
+                model: modelId,
+                messages,
+            },
+        });
 
-    return {
-        text: result?.choices?.[0]?.message.content as string,
-        token: result.usage?.totalTokens,
+        return {
+            text: result?.choices?.[0]?.message.content as string,
+            token: Math.max((result.usage?.totalTokens ?? 0) - SYSTEM_INSTRUCTION_TOKEN_ESTIMATE, 0),
+        }
+    } catch (error: any) {
+        const status = error?.status ?? error?.response$?.status ?? error?.error?.code;
+        if (status === 429 || error?.statusText === "Too Many Requests" || error?.message?.includes("429")) {
+            throw new RateLimitError(modelId);
+        }
+        throw error;
     }
 };
