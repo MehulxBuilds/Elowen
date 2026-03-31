@@ -16,6 +16,7 @@ import { Badge } from "@repo/ui";
 import { logout } from "@/lib/auth-utils";
 import { useMeQuery } from "@/hooks/use-me-query";
 import { useRouter } from "next/navigation";
+import { useAvatar } from "@/components/use-create-avatar";
 
 interface UserButtonProps {
     onSettings?: () => void;
@@ -37,6 +38,7 @@ export default function UserButton({
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const { data: user, isLoading: isFetching } = useMeQuery();
+    const avatarUrl = useAvatar(user?.firstName ?? "user");
 
     const handleLogout = async () => {
         setIsLoading(true);
@@ -79,7 +81,7 @@ export default function UserButton({
                     disabled={isLoading}
                 >
                     <Avatar className={avatarSizes[size]}>
-                        <AvatarImage src={user.photoUrl ?? ""} alt={displayName ?? "User"} />
+                        <AvatarImage src={user.photoUrl ?? avatarUrl} alt={displayName ?? "User"} />
                         <AvatarFallback className="bg-primary text-primary-foreground font-medium">
                             {getInitials()}
                         </AvatarFallback>
@@ -99,7 +101,7 @@ export default function UserButton({
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex items-center space-x-3 py-1">
                         <Avatar className="h-10 w-10">
-                            <AvatarImage src={user.photoUrl ?? ""} alt={displayName ?? "User"} />
+                            <AvatarImage src={user.photoUrl ?? avatarUrl} alt={displayName ?? "User"} />
                             <AvatarFallback className="bg-primary text-primary-foreground font-medium">
                                 {getInitials()}
                             </AvatarFallback>

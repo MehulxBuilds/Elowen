@@ -31,14 +31,13 @@ export async function POST(req: NextRequest) {
     }
 
     const user = await client.user.upsert({
-        where: { telegramId: BigInt(data.id) },
+        where: {
+            telegramId: BigInt(data.id)
+        },
         update: {
             firstName: data.first_name,
             lastName: data.last_name ?? null,
             username: data.username ?? null,
-            photoUrl: data.photo_url ?? null,
-            modelId: "arcee-ai/trinity-mini:free",
-            modelName: "Arcee AI: Trinity Mini (free)",
         },
         create: {
             telegramId: BigInt(data.id),
