@@ -81,8 +81,8 @@ export default function SignInPage() {
                         <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-400 mb-2">
                             Welcome back
                         </h1>
-                        <p className="text-sm text-zinc-500">
-                            Sign in with your Telegram account to continue.
+                        <p className="text-[12.5px] text-zinc-500">
+                            Sign in with your Telegram account.
                         </p>
                     </div>
 
@@ -97,7 +97,9 @@ export default function SignInPage() {
                             </p>
                         </div>
                     ) : (
-                        <div ref={widgetRef} />
+                        <div style={{ filter: 'hue-rotate(-185deg) saturate(5) brightness(0.75)' }} className="animate-bounce">
+                            <div ref={widgetRef} />
+                        </div>
                     )}
 
                     {error && (
