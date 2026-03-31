@@ -18,7 +18,6 @@ export type AuthUser = {
 async function getSessionUser(): Promise<AuthUser | null> {
     const cookieStore = await cookies();
     const token = cookieStore.get("session")?.value;
-    console.log(token);
     if (!token) return null;
 
     const session = await client.session.findUnique({

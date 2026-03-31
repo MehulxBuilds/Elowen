@@ -7,19 +7,20 @@ datasource db {
 }
 
 model User {
-  id         String     @id @default(cuid())
-  telegramId BigInt     @unique
-  firstName  String
-  lastName   String?
-  username   String?
-  photoUrl   String?
-  modelId    String?
-  modelName  String?
-  sessions   Session[]
-  messages   Message[]
-  userUsage  UserUsage?
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  id              String           @id @default(cuid())
+  telegramId      BigInt           @unique
+  firstName       String
+  lastName        String?
+  username        String?
+  photoUrl        String?
+  modelId         String?
+  modelName       String?
+  sessions        Session[]
+  messages        Message[]
+  userUsage       UserUsage?
+  userDailyUsages UserDailyUsage[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 }
 
 model Session {
@@ -53,6 +54,21 @@ model UserUsage {
   updatedAt DateTime @updatedAt
 
   @@map("user_usage")
+}
+
+model UserDailyUsage {
+  id     String   @id @default(uuid())
+  userId String
+  date   DateTime
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tokenConsumed Decimal? @db.Decimal(12, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, date])
+  @@map("user_daily_usage")
 }
 
 model Message {

@@ -163,7 +163,7 @@ export class DumpConsumer {
                 }),
             );
 
-            // 3. Update token usage per user
+            // 3. Update token usage per user (total + daily)
             const tokensByUser = new Map<string, number>();
             for (const msg of messages) {
                 const tokens = msg.tokens || 0;
@@ -172,15 +172,41 @@ export class DumpConsumer {
                 }
             }
 
-            await Promise.all(
-                Array.from(tokensByUser.entries()).map(([userId, tokens]) =>
-                    client.userUsage.upsert({
-                        where: { userId },
-                        create: { userId, tokenConsumed: new Decimal(tokens) },
-                        update: { tokenConsumed: { increment: tokens } },
+            if (tokensByUser.size > 0) {
+                const now = new Date();
+                const today = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+                const usersWithTokens = Array.from(tokensByUser.keys());
+
+                // Fetch existing daily records for today in one query
+                const existingDaily = await client.userDailyUsage.findMany({
+                    where: { userId: { in: usersWithTokens }, date: today },
+                    select: { id: true, userId: true },
+                });
+                const dailyByUser = new Map(existingDaily.map((r) => [r.userId, r.id]));
+
+                await Promise.all([
+                    // Total usage
+                    ...Array.from(tokensByUser.entries()).map(([userId, tokens]) =>
+                        client.userUsage.upsert({
+                            where: { userId },
+                            create: { userId, tokenConsumed: new Decimal(tokens) },
+                            update: { tokenConsumed: { increment: tokens } },
+                        }),
+                    ),
+                    // Daily usage
+                    ...Array.from(tokensByUser.entries()).map(([userId, tokens]) => {
+                        const existingId = dailyByUser.get(userId);
+                        return existingId
+                            ? client.userDailyUsage.update({
+                                where: { id: existingId },
+                                data: { tokenConsumed: { increment: tokens } },
+                            })
+                            : client.userDailyUsage.create({
+                                data: { userId, date: today, tokenConsumed: new Decimal(tokens) },
+                            });
                     }),
-                ),
-            );
+                ]);
+            }
 
             const duration = Date.now() - startTime;
             console.log(`✅ DumpConsumer saved ${messages.length} messages to DB and cache (${duration}ms)`);
