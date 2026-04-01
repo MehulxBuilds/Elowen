@@ -30,11 +30,10 @@ const saveModel = async (payload: { modelId: string; modelName: string }) => {
     return res.json();
 };
 
-export const useModelsQuery = (enabled: boolean) =>
+export const useModelsQuery = () =>
     useQuery({
         queryKey: ["models"],
         queryFn: fetchModels,
-        enabled,
         staleTime: 5 * 60 * 1000,
     });
 
