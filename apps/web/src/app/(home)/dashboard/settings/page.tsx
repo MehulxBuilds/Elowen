@@ -19,18 +19,17 @@ import {
     Button,
     Badge,
     Separator,
+    Skeleton,
 } from "@repo/ui";
 import { CheckIcon, BotIcon, Settings2Icon } from "lucide-react";
 
 export default function SettingsPage() {
     const { data: me } = useMeQuery();
-    const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState<Model | null>(null);
 
-    const { data: models = [], isLoading } = useModelsQuery(open);
+    const { data: models = [], isLoading } = useModelsQuery();
 
     const { mutate: updateModel, isPending } = useUpdateModel(() => {
-        setOpen(false);
         setSelected(null);
     });
 
@@ -40,55 +39,33 @@ export default function SettingsPage() {
     };
 
     return (
-        <div className="p-6 max-w-2xl space-y-6">
+        <div className="p-6 w-full space-y-6 font-sans">
             <div>
-                <h1 className="text-xl font-semibold">Settings</h1>
-                <p className="text-sm text-muted-foreground mt-1">Manage your preferences.</p>
+                <h1 className="text-2xl font-semibold">Settings</h1>
+                <p className="text-sm text-muted-foreground mt-1">
+                    Manage your preferences. Choose your preferred AI model.
+                </p>
             </div>
 
             <Separator />
 
-            {/* AI Model row */}
-            <div className="flex items-center justify-between rounded-xl border p-4">
-                <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg border bg-muted">
-                        <BotIcon className="size-4 text-muted-foreground" />
-                    </div>
-                    <div>
-                        <p className="text-sm font-medium">AI Model</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                            {me?.modelName ?? "No model selected"}
+            {/* 👇 THIS is your model selector section */}
+            {isLoading ? (
+                <ModelSelectorSkeleton />
+            ) : (
+                <div className="border rounded-lg bg-background max-w-full">
+                    <div className="px-4 pt-4 pb-2">
+                        <h2 className="text-lg font-medium">Choose AI Model</h2>
+                        <p className="text-sm text-muted-foreground">
+                            Currently: <span className="text-foreground font-medium">
+                                {me?.modelName ?? "—"}
+                            </span>
                         </p>
                     </div>
-                </div>
-                <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
-                    <Settings2Icon className="size-3.5 mr-1.5" />
-                    Change
-                </Button>
-            </div>
 
-            {/* Non-closing model picker dialog */}
-            <Dialog
-                open={open}
-                onOpenChange={(v) => {
-                    if (!isPending) setOpen(v);
-                }}
-            >
-                <DialogContent
-                    className="p-0 gap-0 max-w-lg"
-                    onInteractOutside={(e) => e.preventDefault()}
-                    onEscapeKeyDown={(e) => e.preventDefault()}
-                >
-                    <DialogHeader className="px-4 pt-4 pb-2">
-                        <DialogTitle>Choose AI Model</DialogTitle>
-                        <DialogDescription>
-                            Currently: <span className="text-foreground font-medium">{me?.modelName ?? "—"}</span>
-                        </DialogDescription>
-                    </DialogHeader>
-
-                    <Command className="border-t rounded-none">
+                    <Command className="border-t">
                         <CommandInput placeholder="Search models..." />
-                        <CommandList className="max-h-72">
+                        <CommandList className="min-h-96 overflow-y-auto">
                             {isLoading && (
                                 <div className="py-6 text-center text-sm text-muted-foreground">
                                     Loading models...
@@ -130,19 +107,21 @@ export default function SettingsPage() {
                         </CommandList>
                     </Command>
 
+
                     <div className="flex items-center justify-between gap-2 border-t px-4 py-3">
                         <p className="text-xs text-muted-foreground truncate">
                             {selected ? selected.name : "No model selected"}
                         </p>
-                        <div className="flex gap-2 shrink-0">
+
+                        <div className="flex gap-2">
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => { setOpen(false); setSelected(null); }}
-                                disabled={isPending}
+                                onClick={() => setSelected(null)}
                             >
                                 Cancel
                             </Button>
+
                             <Button
                                 size="sm"
                                 onClick={handleSave}
@@ -152,8 +131,61 @@ export default function SettingsPage() {
                             </Button>
                         </div>
                     </div>
-                </DialogContent>
-            </Dialog>
+                </div>
+            )}
+        </div>
+    );
+};
+
+function ModelSelectorSkeleton() {
+    return (
+        <div className="border rounded-lg bg-background max-w-full">
+
+            {/* Header */}
+            <div className="px-4 pt-4 pb-2 space-y-2">
+                <Skeleton className="h-5 w-40" />
+                <Skeleton className="h-4 w-52" />
+            </div>
+
+            {/* Command Section */}
+            <div className="border-t">
+
+                {/* Search */}
+                <div className="p-2">
+                    <Skeleton className="h-9 w-full rounded-md" />
+                </div>
+
+                {/* List */}
+                <div className="min-h-96 space-y-3 px-2 pb-3">
+                    {[...Array(6)].map((_, i) => (
+                        <div
+                            key={i}
+                            className="flex items-start gap-2 py-2 px-2"
+                        >
+                            <Skeleton className="size-4 mt-1 shrink-0 rounded-sm" />
+
+                            <div className="flex-1 space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <Skeleton className="h-4 w-40" />
+                                    <Skeleton className="h-4 w-14 rounded-full" />
+                                </div>
+
+                                <Skeleton className="h-3 w-64" />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between gap-2 border-t px-4 py-3">
+                <Skeleton className="h-4 w-40" />
+
+                <div className="flex gap-2">
+                    <Skeleton className="h-8 w-16 rounded-md" />
+                    <Skeleton className="h-8 w-16 rounded-md" />
+                </div>
+            </div>
         </div>
     );
 }

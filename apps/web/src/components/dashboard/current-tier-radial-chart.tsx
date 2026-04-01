@@ -42,8 +42,12 @@ export function CurrentTierChartRadial() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Radial Chart - Shape</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Current Tier</CardTitle>
+        <CardDescription>
+          <div className="text-yellow-500 bg-yellow-800/40 rounded-md w-[50px] py-[0.8px] text-center">
+            free
+          </div>
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
