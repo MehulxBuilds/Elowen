@@ -20,10 +20,16 @@ export async function POST(req: NextRequest) {
     }
 
     const user = await client.user.findUnique({
-        where: { telegramId: BigInt(msg.from.id) },
+        where: {
+            telegramId: BigInt(msg.from.id)
+        },
+        select: {
+            sessions: true,
+            id: true,
+        }
     });
 
-    if (!user) {
+    if (!user?.sessions || !user?.sessions.some((s) => s.expiresAt > new Date())) {
         await bot.sendMessage(msg.chat.id, "Please sign in first.");
         return NextResponse.json({ ok: true });
     };
