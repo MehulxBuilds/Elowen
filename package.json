@@ -27,6 +27,8 @@
     "packages/*"
   ],
   "dependencies": {
+    "@polar-sh/nextjs": "^0.9.5",
+    "@polar-sh/sdk": "^0.47.0",
     "@types/three": "^0.183.1",
     "three": "^0.183.2"
   }

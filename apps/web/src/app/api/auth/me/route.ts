@@ -29,6 +29,8 @@ export async function GET() {
             photoUrl: user.photoUrl,
             modelId: user.modelId,
             modelName: user.modelName,
+            subscriptionTier: user.subscriptionTier,
+            subscriptionStatus: user.subscriptionStatus,
         },
     });
 }
