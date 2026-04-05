@@ -8,6 +8,8 @@ export type MeUser = {
     photoUrl: string | null;
     modelId: string | null;
     modelName: string | null;
+    subscriptionTier: "FREE" | "PRO" | "ENTERPRISE";
+    subscriptionStatus: "ACTIVE" | "INACTIVE" | "CANCELED" | null;
 };
 
 const fetchMe = async (): Promise<MeUser | null> => {
