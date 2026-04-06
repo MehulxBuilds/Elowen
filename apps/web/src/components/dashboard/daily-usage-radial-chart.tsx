@@ -18,8 +18,7 @@ import {
 } from "@repo/ui"
 import { ChartContainer, type ChartConfig } from "@repo/ui"
 import { useDailyUsage } from "@/hooks/use-daily-usage"
-
-const DAILY_LIMIT = 10_000
+import { DailyLimit } from "@/lib/constants"
 
 const chartConfig = {
     tokens: {
@@ -37,11 +36,11 @@ export function DailyUsageRadialChart() {
     const { data, isLoading } = useDailyUsage(year, month)
 
     const todayTokens = data?.find((d) => d.date === todayStr)?.tokens || 0;
-    const pct = Math.min(todayTokens / DAILY_LIMIT, 1)
+    const pct = Math.min(todayTokens / DailyLimit, 1)
     const endAngle = 90 - Math.max(pct, 0.005) * 360
 
-    const remaining = Math.max(DAILY_LIMIT - todayTokens, 0)
-    const isExceeded = todayTokens > DAILY_LIMIT
+    const remaining = Math.max(DailyLimit - todayTokens, 0)
+    const isExceeded = todayTokens > DailyLimit
 
     const chartData = [{ tokens: todayTokens, fill: "var(--color-tokens)" }]
 
@@ -49,7 +48,7 @@ export function DailyUsageRadialChart() {
         <Card className="flex flex-col">
             <CardHeader className="items-center pb-0">
                 <CardTitle>Today&apos;s Usage</CardTitle>
-                <CardDescription>Daily limit: {DAILY_LIMIT.toLocaleString()} tokens</CardDescription>
+                <CardDescription>Daily limit: {DailyLimit.toLocaleString()} tokens</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
                 {isLoading ? (
@@ -114,9 +113,9 @@ export function DailyUsageRadialChart() {
                 )}
             </CardContent>
             <CardFooter className="flex-col gap-2 text-sm">
-               <div className="flex items-center gap-2 leading-none font-medium">
+                <div className="flex items-center gap-2 leading-none font-medium">
                     {isExceeded
-                        ? `${(todayTokens - DAILY_LIMIT).toLocaleString()} tokens over limit`
+                        ? `${(todayTokens - DailyLimit).toLocaleString()} tokens over limit`
                         : `${remaining.toLocaleString()} tokens remaining`}
                 </div>
                 <div className="leading-none text-muted-foreground px-8">

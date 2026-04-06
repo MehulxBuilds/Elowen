@@ -18,10 +18,11 @@ import {
 } from "@repo/ui"
 import { ChartContainer, type ChartConfig } from "@repo/ui"
 import { useCurrentTierUsage } from "@/hooks/use-user-usage"
+import { FreeLimit, PremiumLimit } from "@/lib/constants"
 
 const TIER_LIMITS: Record<string, number> = {
-  FREE: 10_000,
-  PRO: 100_000,
+  FREE: FreeLimit,
+  PRO: PremiumLimit,
   ENTERPRISE: Infinity,
 }
 
