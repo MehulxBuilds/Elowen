@@ -162,16 +162,16 @@ export default function SubscriptionPage() {
                             className={cn(
                                 "relative flex flex-col",
                                 plan.highlighted
-                                    ? "border-primary shadow-lg shadow-primary/10"
+                                    ? "border-orange-500 shadow-lg shadow-orange-400/20"
                                     : "",
                                 isCurrentPlan
-                                    ? "ring-2 ring-primary"
+                                    ? "ring-2 ring-orange-500"
                                     : ""
                             )}
                         >
                             {plan.badge && (
                                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                                    <span className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">
+                                    <span className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full shadow-lg shadow-white/10">
                                         {plan.badge}
                                     </span>
                                 </div>
@@ -181,7 +181,7 @@ export default function SubscriptionPage() {
                                 <div className="flex items-center justify-between">
                                     <CardTitle className="text-xl">{plan.name}</CardTitle>
                                     {isCurrentPlan && (
-                                        <span className="text-xs font-medium bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                                        <span className="text-xs font-medium bg-primary/10 text-primary px-2 py-0.5 rounded-full mx-2">
                                             Current Plan
                                         </span>
                                     )}

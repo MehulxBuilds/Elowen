@@ -40,8 +40,8 @@ export default function ProfilePage() {
         <div className="relative min-h-screen overflow-hidden bg-black font-sans text-zinc-300 flex flex-col items-center justify-center">
 
             {/* Background glows */}
-            <div className="absolute z-0 -left-40 top-0 h-[500px] w-[500px] rounded-full bg-blue-600 blur-[150px] opacity-20 pointer-events-none" />
-            <div className="absolute z-0 -right-40 bottom-0 h-[500px] w-[500px] rounded-full bg-blue-600 blur-[150px] opacity-20 pointer-events-none" />
+            <div className="absolute z-0 -left-40 top-0 h-[500px] w-[500px] rounded-full bg-orange-400 blur-[150px] opacity-20 pointer-events-none" />
+            <div className="absolute z-0 -right-40 bottom-0 h-[500px] w-[500px] rounded-full bg-orange-600 blur-[150px] opacity-20 pointer-events-none" />
 
             {/* Grid texture */}
             <div className="absolute z-0 inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_60%,transparent_100%)] pointer-events-none" />
